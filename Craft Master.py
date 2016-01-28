@@ -3,7 +3,7 @@
 # Program Description: Material gathering and crafting game
 #  by MAARTEN BERGSMA    www.bergsmaarten@gmail.com
 # Python 3.5.0 program template in Guerin computer science course
-# Dec 2015, Vers 2.3
+# Dec 2015, Vers 3.0
 
 import random
 import time
@@ -12,7 +12,7 @@ resInv = []
 craftedInv = []
 toolInv = ["HANDS"]
 resLeft = True
-resCount = 15                      
+resCount = 10                      
 
 # FUNCTIONS
 
@@ -50,7 +50,7 @@ def ponderSec():
     return
 
 # Launches the player interface
-def interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText,textID):
+def interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID):
     global resCount
     while len(gatherAble) > 0:
 
@@ -78,11 +78,15 @@ def interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText
 
         # Craft condition - required craftEngine() function
         if playerAction == "1":
-            letThereBeLine()
-            print("Haha, NO")
+            craftEngine(resInv,toolInv,craftedInv)
 
         # Gather condition
         elif playerAction == "2":
+            letThereBeCloseLine()
+            print("  ________ ________ _________ ")
+            print(" / ___/ _ /_  __/ // / __/ _ \ ")
+            print("/ (_ / __ |/ / / _  / _// , _/")
+            print("\___/_/ |_/_/ /_//_/___/_/|_| ")
             letThereBeLine()
             if "NOTHING" in gatherAble:
                 textID = 5
@@ -113,32 +117,57 @@ def interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText
 
         # Move condition
         elif playerAction == "4":
+            
+            letThereBeCloseLine()
+            print("   __  _______ _   ______")
+            print("  /  |/  / __ \ | / / __/")
+            print(" / /|_/ / /_/ / |/ / _/  ")
+            print("/_/  /_/\____/|___/___/  ")
             letThereBeLine()
+            
             return
     
-    interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText,textID)
+    interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
     return
 
 def craftEngine(resInv,toolInv,craftedInv):
+    doneCraft = False
     while doneCraft == False:
+        
+        letThereBeCloseLine()
+        print("  ________  ___   __________")
+        print(" / ___/ _ \/ _ | / __/_  __/")
+        print("/ /__/ , _/ __ |/ _/  / /   ")
+        print("\___/_/|_/_/ |_/_/   /_/    ")
         letThereBeLine()
+        
         craftAction = input("  [1] SELECT   [2] CRAFT   [3] INVENTORY   [4] DONE\n\n>> ")
         while craftAction != "1" and craftAction != "2" and craftAction != "3" and craftAction != "4":
             letThereBeLine()
             craftAction = input("> Please select...\n\n  [1] CRAFT   [2] GATHER   [3] INVENTORY   [4] MOVE\n\n>> ")
+
+        # Internal crafting inventory condition
         if craftAction == "3":
             inventoryLaunch(resInv, toolInv, craftedInv)
+
+        # Craft go back condition
+        if craftAction == "4":
+            letThereBeLine()
+            doneCraft = True
+            
     
 # Launches the main inventory interface
 def inventoryLaunch(resInv, toolInv, craftedInv):
     goBack1 = False
     while goBack1 == False:
+        
         letThereBeCloseLine()
         print("   _____  ___   _______  ____________  _____  __ ")
         print("  /  _/ |/ / | / / __/ |/ /_  __/ __ \/ _ \ \/ / ")
         print(" _/ //    /| |/ / _//    / / / / /_/ / , _/\  /  ")
         print("/___/_/|_/ |___/___/_/|_/ /_/  \____/_/|_| /_/   ")                                               
         letThereBeLine()
+        
         goBack1 = False
         invInput = input("  [1] RESOURCES   [2] TOOLS   [3] CRAFTED   [4] BACK\n\n>> ")
         while invInput != "1" and invInput != "2" and invInput != "3" and invInput != "4":
@@ -172,17 +201,19 @@ def inventoryLaunch(resInv, toolInv, craftedInv):
             goBack1 = True
     return
         
-        
-                
-    
 # Game over interface
 def endGame():
-    letTherebeLine()
+    letThereBeLine()
     print("> You have exhausted the resources around you")
     print("> There is still time to craft the resources you have already gathered...")
     while resLeft == False:
-        letThereBeLine()
+        craftEngine()
         
+
+
+################################################################################
+
+       
 # Contains actual game code... randomization of resources, locations, etc.
 def main():
     
@@ -211,21 +242,22 @@ def main():
         while trueLocation != "1" and trueLocation != "2" and trueLocation != "3" and trueLocation != "4":
             letThereBeLine()
             trueLocation = input("> Please select:\n\n[1] Forest\n[2] Mountains\n[3] Desert\n[4] Riverbank\n\n>> ")
+            
     giveMeSpace()
-    print("  ________   __  _______  _____________   ___  ______   ")
-    print(" / ___/ _ | /  |/  / __/ / __/_  __/ _ | / _ \/_  __/   ")
-    print("/ (_ / __ |/ /|_/ / _/  _\ \  / / / __ |/ , _/ / /      ")
-    print("\___/_/ |_/_/  /_/___/ /___/ /_/ /_/ |_/_/|_| /_/       ")
-    
-                           
+                              
     # True location FOREST
     if trueLocation == "1":
-
-        # Story introduction for FOREST ... take time comments out later
+        letThereBeCloseLine()
+        print("   ________  ___  ______________")
+        print("  / __/ __ \/ _ \/ __/ __/_  __/")
+        print(" / _// /_/ / , _/ _/_\ \  / /   ")
+        print("/_/  \____/_/|_/___/___/ /_/    ")
         letThereBeLine()
+        
+        # Story introduction for FOREST ... take time comments out later
  #       time.sleep(1)
         print("> You suddenly wake up in the middle of a vast forest.")
-#        time.sleep(2.5)
+ #       time.sleep(2.5)
         print("> You look around.")
  #       ponderSec()
         print("> There's nobody around ... only you.")
@@ -240,54 +272,103 @@ def main():
         while resLeft == True:
             
             # Random resource generation ... change to larger range later
-            resType = random.randint(0,7)
+            resType = random.randint(0,10)
             textID = random.randint(0,3)
 
             # Tree condition
-            if resType == 0 or resType == 1 or resType == 2:
+            if resType == 0 or resType == 1:
                 resText = "TREE"
                 gatherAble = ["WOOD","WOOD","WOOD"]
                 reqTool = "AXE"
-                interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText,textID)
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
                 checkForRes(resCount)
 
             # Shrub condition
-            elif resType == 3 or resType == 4:
+            elif resType == 2 or resType == 3:
                 resText = "SHRUB"
                 gatherAble = ["LEAVES","STICK","STICK"]
                 reqTool = "HANDS"
-                interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText,textID)
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
                 checkForRes(resCount)
 
-            # Rock condition
-            elif resType == 5 or resType == 6:
+            # Stonepile condition
+            elif resType == 4 or resType == 5:
                 resText = "STONEPILE"
                 gatherAble = []
                 # Randomizes rock count
-                for i in range(0,random.randint(1,3)):
+                for i in range(0,random.randint(1,2)):
                     gatherAble.append("ROCK")
+                # Randomize chance for flint
+                flintChance = random.randint(1,3)
+                if flintChance == 1:
+                    gatherAble.append("FLINT")
                 reqTool = "HANDS"
-                interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText,textID)
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
                 checkForRes(resCount)
 
             # Vine condition
-            elif resType == 7:
+            elif resType == 6 or resType == 7:
                 resText = "VINE"
                 reqTool = "HANDS"
-                gatherAble = ["VINE"]
-                interfaceLaunch(gatherAble,reqTool,resInv,resType,toolInv,craftedInv,resText,textID)
+                gatherAble = ["CORD"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
                 checkForRes(resCount)
+
+            # Rabbit condition
+            elif resType == 8:
+                resText = "RABBIT"
+                reqTool = "BOW & ARROW"
+                gatherAble = ["MEAT"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Pond condition
+            elif resType == 9:
+                resText = "POND"
+                reqTool = "HANDS"
+                gatherAble = ["FRESHWATER"]
+                # Randomizes fish spawn chance
+                fishChance = random.randint(1,4)
+                if fishChance == 1:
+                    gatherAble.append("UNLUCKY FISH")
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Vegetable condition
+            elif resType == 10:
+                resText = "SUSPICIOUS ROOT"
+                reqTool = "HANDS"
+                gatherAble = []
+                # Randomizes vegetable type
+                vegChance = random.randint(1,3)
+                if vegChance == 1:
+                    gatherAble.append("CARROT")
+                elif vegChance == 2:
+                    gatherAble.append("POTATO")
+                elif vegChance == 3:
+                    gatherAble.append("ONION")
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
         endGame()
 
 # ACTUAL PROGRAM START                       
 
-print("\n\nWelcome to")
-print("\n<>===========================================================<>")
-print("  ________  ___   __________  __  ______   _________________  ")
-print(" / ___/ _ \/ _ | / __/_  __/ /  |/  / _ | / __/_  __/ __/ _ \ ")
-print("/ /__/ , _/ __ |/ _/  / /   / /|_/ / __ |_\ \  / / / _// , _/ ")
-print("\___/_/|_/_/ |_/_/   /_/   /_/  /_/_/ |_/___/ /_/ /___/_/|_|  v2.7")
-print("\n<>===========================================================<>\n")
+print("\n\nWelcome to\n")
+print(" ██████╗██████╗  █████╗ ███████╗████████╗            ")
+print("██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝            ")
+print("██║     ██████╔╝███████║█████╗     ██║               ")
+print("██║     ██╔══██╗██╔══██║██╔══╝     ██║               ")
+print("╚██████╗██║  ██║██║  ██║██║        ██║               ")
+print(" ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝               ")
+print("                                                     ")
+print("███╗   ███╗ █████╗ ███████╗████████╗███████╗██████╗  ")
+print("████╗ ████║██╔══██╗██╔════╝╚══██╔══╝██╔════╝██╔══██╗ ")
+print("██╔████╔██║███████║███████╗   ██║   █████╗  ██████╔╝ ")
+print("██║╚██╔╝██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗ ")
+print("██║ ╚═╝ ██║██║  ██║███████║   ██║   ███████╗██║  ██║ ")
+print("╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v3.0")
+letThereBeLine()
 
 
 # Asciing about the tutorial
@@ -297,19 +378,29 @@ chooseTut = input("> Would you like to read the tutorial?\n\n[Y] Yes\n[N] No\n\n
 while chooseTut != "Y" and chooseTut != "y" and chooseTut != "N" and chooseTut != "n":
     letThereBeLine()
     chooseTut = input("> Please select...\n\n[Y] Read the tutorial\n[N] Skip it\n\n>> ")
-else:
-    if chooseTut == "Y" or chooseTut == "y":
-        letThereBeLine()
-        print("> The goal of the game is simple: make the coolest items you can!")
-        print("> The more complex the item, the more points you recieve.")
-        print("> The game ends when you are exhaust the resources around you.")
-        print("> Make sure to take note of your location, as location determines resources!")
-        print("> The rest is up to you! Go make something awesome!")
-       
 
-            
-            
+if chooseTut == "Y" or chooseTut == "y":
+    
+    letThereBeCloseLine()
+    print(" ________  ____________  ___  _______   __ ")
+    print("/_  __/ / / /_  __/ __ \/ _ \/  _/ _ | / / ")
+    print(" / / / /_/ / / / / /_/ / , _// // __ |/ /__")
+    print("/_/  \____/ /_/  \____/_/|_/___/_/ |_/____/")
+    letThereBeLine()
+    
+    print("> The goal of the game is simple create the best items you can to survive!")
+    print("> The more complex or practical the item, the more points you recieve.")
+    print("> The game ends when you are exhaust the resources around you.")
+    print("> Make sure to take note of your location, as location determines resource types.")
+    print("> The rest is up to you! Good luck!")
+    
+letThereBeLine()
 
-            
+diffSet = int(input("> How hard do you want the game?\n\n[99+] Infinite\n[~50] Easy\n[~30] Hard\n[~10] Impossible\n\n>> "))
+resCount = diffSet
+
+    
+
+
  # including this instruction to allow functions to be called before they are defined
 if __name__ == "__main__": main()
