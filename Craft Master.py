@@ -12,7 +12,8 @@ resInv = []
 craftedInv = []
 toolInv = ["HANDS"]
 resLeft = True
-resCount = 10                      
+resCount = 10
+score = "0"
 
 # FUNCTIONS
 
@@ -131,6 +132,7 @@ def interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
     return
 
 def craftEngine(resInv,toolInv,craftedInv):
+    global score
     selectedItems = []
     doneCraft = False
     while doneCraft == False:
@@ -181,18 +183,26 @@ def craftEngine(resInv,toolInv,craftedInv):
                     elif itemSelect == "Q" or itemSelect == "q":
                         doneSelect = True
                         break;break
+
+        # Check the selected items list against the list of recipes
+        if craftAction == "2":
+            keys = list(recipeList.keys())
+            values = list(recipeList.values())
+            for i in range(0,len(recipeList)):
+                if selectedItems == values[i]:
+                    letThereBeLine()
+                    print("You have crafted a(n)",keys[i])
+                    if keys[i] == "AXE" or keys[i] == "BOW & ARROW":
+                           toolInv.append(keys[i])
+                    craftedInv.append(keys[i])
+                
                     
-            
-            
-                
         
-                
 
         # Internal crafting inventory condition
         if craftAction == "3":
             inventoryLaunch(resInv, toolInv, craftedInv)
 
-###################################################################################
             
         # Craft go back condition
         if craftAction == "4":
@@ -255,7 +265,6 @@ def endGame():
     while resLeft == False:
         craftEngine()
         
-
 
 ################################################################################
 
@@ -397,6 +406,12 @@ def main():
                 checkForRes(resCount)
 
         endGame()
+
+##############################################################################
+
+recipeList = {"AXE":["STICK","CORD","ROCK"]}
+
+##############################################################################
 
 # ACTUAL PROGRAM START                       
 
