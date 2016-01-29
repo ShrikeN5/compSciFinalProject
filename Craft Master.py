@@ -131,6 +131,7 @@ def interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
     return
 
 def craftEngine(resInv,toolInv,craftedInv):
+    selectedItems = []
     doneCraft = False
     while doneCraft == False:
         
@@ -144,14 +145,59 @@ def craftEngine(resInv,toolInv,craftedInv):
         craftAction = input("  [1] SELECT   [2] CRAFT   [3] INVENTORY   [4] DONE\n\n>> ")
         while craftAction != "1" and craftAction != "2" and craftAction != "3" and craftAction != "4":
             letThereBeLine()
-            craftAction = input("> Please select...\n\n  [1] CRAFT   [2] GATHER   [3] INVENTORY   [4] MOVE\n\n>> ")
+            craftAction = input("> Please select...\n\n  [1] SELECT   [2] CRAFT   [3] INVENTORY   [4] DONE\n\n>> ")
+
+        # Selection system
+        if craftAction == "1":
+            doneSelect = False
+
+            while doneSelect == False:
+                x = []   # List that is checked for mathes during selection
+                for i in range(1,len(resInv)+1):
+                    x.append(str(i))
+                    
+                letThereBeLine()
+                
+                if len(resInv) <= 0:
+                    print("> You have selected [","-".join(selectedItems),"]") 
+                    print("> You can't select any more resources")
+                    break
+                    
+                print("> Select the items you want to craft:\n")
+                for i in range(1,len(resInv)+1):
+                      print(i,resInv[i-1])
+                print("\n> You have selected [","-".join(selectedItems),"]")
+                letThereBeLine()
+                print("> Press 'Q' to go back")
+                itemSelect = input("\n>> ")
+                
+                while itemSelect not in x and itemSelect != "Q" and itemSelect != "q":
+                    itemSelect = input("\n> Please make a selection\n\n>> ")
+                    
+                for i in range(1,len(resInv)+1):
+                    if itemSelect == str(i):
+                        selectedItems.append(resInv.pop(i-1))
+                        
+                    elif itemSelect == "Q" or itemSelect == "q":
+                        doneSelect = True
+                        break;break
+                    
+            
+            
+                
+        
+                
 
         # Internal crafting inventory condition
         if craftAction == "3":
             inventoryLaunch(resInv, toolInv, craftedInv)
 
+###################################################################################
+            
         # Craft go back condition
         if craftAction == "4":
+            for i in range(0,len(selectedItems)):
+                resInv.append(selectedItems.pop())
             letThereBeLine()
             doneCraft = True
             
@@ -396,7 +442,7 @@ if chooseTut == "Y" or chooseTut == "y":
     
 letThereBeLine()
 
-diffSet = int(input("> How hard do you want the game?\n\n[99+] Infinite\n[~50] Easy\n[~30] Hard\n[~10] Impossible\n\n>> "))
+diffSet = int(input("> How hard do you want the game?\n\n[99+] Sandbox\n[~50] Easy\n[~30] Hard\n[~10] Impossible\n\n>> "))
 resCount = diffSet
 
     
