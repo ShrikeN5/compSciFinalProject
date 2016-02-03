@@ -3,7 +3,7 @@
 # Program Description: Material gathering and crafting game
 #  by MAARTEN BERGSMA    www.bergsmaarten@gmail.com
 # Python 3.5.0 program template in Guerin computer science course
-# Dec 2015, Vers 3.0
+# Dec 2015, Vers 3.8
 
 import random
 import time
@@ -154,7 +154,7 @@ def craftEngine(resInv,toolInv,craftedInv):
             doneSelect = False
 
             while doneSelect == False:
-                x = []   # List that is checked for mathes during selection
+                x = []   # List that is checked for matches during item selection, not crafting
                 for i in range(1,len(resInv)+1):
                     x.append(str(i))
                     
@@ -170,35 +170,84 @@ def craftEngine(resInv,toolInv,craftedInv):
                       print(i,resInv[i-1])
                 print("\n> You have selected [","-".join(selectedItems),"]")
                 letThereBeLine()
-                print("> Press 'Q' to go back")
-                itemSelect = input("\n>> ")
+                itemSelect = input("  [C] CLEAR   [X] DELETE   [M] COMPLEX   [Q] BACK\n\n>> ")
                 
-                while itemSelect not in x and itemSelect != "Q" and itemSelect != "q":
-                    itemSelect = input("\n> Please make a selection\n\n>> ")
+                while itemSelect not in x and itemSelect != "Q" and itemSelect != "q" \
+                      and itemSelect != "c" and itemSelect != "C" and itemSelect != "X" \
+                      and itemSelect != "x" and itemSelect != "m" and itemSelect != "M":
                     
+                    itemSelect = input("\n> Please make a selection\n\n>> ")
+
                 for i in range(1,len(resInv)+1):
                     if itemSelect == str(i):
                         selectedItems.append(resInv.pop(i-1))
-                        
+
+                    # Go back to craft interface
                     elif itemSelect == "Q" or itemSelect == "q":
                         doneSelect = True
                         break;break
 
+                    # Clear list of selected items
+                    elif itemSelect == "C" or itemSelect == "c":
+                        for i in range(0,len(selectedItems)):
+                            resInv.append(selectedItems.pop())
+                      
+                    # Delete items in selected list
+                    elif itemSelect == "X" or itemSelect == "x":
+                        selectedItems = []
+
+                    # Complex crafting space
+                    elif itemSelect == "M" or itemSelect =="m":
+
+                    ##################################################
+
+                # CRAFTING BOOK HERE
+
+
+                    #################################################
+
         # Check the selected items list against the list of recipes
         if craftAction == "2":
-            keys = list(recipeList.keys())
-            values = list(recipeList.values())
-            for i in range(0,len(recipeList)):
-                if selectedItems == values[i]:
+                      
+            resKeys = list(resRecipes.keys())
+            resValues = list(resRecipes.values())
+            toolKeys = list(toolRecipes.keys())
+            toolValues = list(toolRecipes.values())
+            complexKeys = list(complexRecipes.keys())
+            complexValues = list(complexRecipes.values())
+                      
+            for i in range(0,len(resRecipes)):
+                      
+                # If match found in resource recipe list...
+                if selectedItems == resValues[i]:
                     letThereBeLine()
-                    print("You have crafted a(n)",keys[i])
-                    if keys[i] == "AXE" or keys[i] == "BOW & ARROW":
-                           toolInv.append(keys[i])
-                    craftedInv.append(keys[i])
-                
+                    print("> You have crafted a(n)",resKeys[i])
+ #########                   print(">",resKeys[i],"added to CRAFTED inventory")
+                    craftedInv.append(resKeys[i])
+                    selectedItems = []
                     
-        
+            for i in range(0,len(toolRecipes)):
+                      
+                # If match found in tool recipe list...
+                if selectedItems == toolValues[i]:
+                    print("> You have crafted a(n)",toolKeys[i])
+                    print(">",resKeys[i],"added to TOOLS inventory")
+                    toolInv.append(toolKeys[i])
+                    selectedItems = []
 
+            for i in range(0,len(complexRecipes)):
+                
+                # If match found in complex recipe list...
+                if selectedItems == complexValues[i]:
+                    print("> You have crafted a(n)",complexKeys[i],"<<COMPLEX>>")
+                    print(">",complexKeys[i],"added to CRAFTED inventory")
+                    craftedInv.append(complexKeys[i])
+                    selectedItems = []
+                      
+            if selectedItems != []:
+                letThereBeLine()
+                print("Craft failed")
+                
         # Internal crafting inventory condition
         if craftAction == "3":
             inventoryLaunch(resInv, toolInv, craftedInv)
@@ -393,15 +442,7 @@ def main():
             elif resType == 10:
                 resText = "SUSPICIOUS ROOT"
                 reqTool = "HANDS"
-                gatherAble = []
-                # Randomizes vegetable type
-                vegChance = random.randint(1,3)
-                if vegChance == 1:
-                    gatherAble.append("CARROT")
-                elif vegChance == 2:
-                    gatherAble.append("POTATO")
-                elif vegChance == 3:
-                    gatherAble.append("ONION")
+                gatherAble = ["POTATO"]
                 interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
                 checkForRes(resCount)
 
@@ -409,7 +450,14 @@ def main():
 
 ##############################################################################
 
-recipeList = {"AXE":["STICK","CORD","ROCK"]}
+# Recipe layout: "NAME":["REQIREMENT","REQUIREMENT","ETC."]
+                      
+resRecipes = {"FIRESTARTER":["STICK","STICK"],"FISH & CHIPS":["UNLUCKY FISH","POTATO"],\
+              "MEAL":["FRESHWATER","POTATO"],"HEARTY MEAL":["FRESHWATER","MEAT"]}
+
+toolRecipes = {"AXE":["STICK","CORD","ROCK"]}
+
+complexRecipes = {"CAMPFIRE":["FIRESTARTER","WOOD"]}
 
 ##############################################################################
 
@@ -428,7 +476,7 @@ print("████╗ ████║██╔══██╗██╔═══
 print("██╔████╔██║███████║███████╗   ██║   █████╗  ██████╔╝ ")
 print("██║╚██╔╝██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗ ")
 print("██║ ╚═╝ ██║██║  ██║███████║   ██║   ███████╗██║  ██║ ")
-print("╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v3.0")
+print("╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v3.8")
 letThereBeLine()
 
 
@@ -457,7 +505,7 @@ if chooseTut == "Y" or chooseTut == "y":
     
 letThereBeLine()
 
-diffSet = int(input("> How hard do you want the game?\n\n[99+] Sandbox\n[~50] Easy\n[~30] Hard\n[~10] Impossible\n\n>> "))
+diffSet = int(input("> Enter resource gather limit:\n\n>> "))
 resCount = diffSet
 
     
