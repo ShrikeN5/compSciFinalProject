@@ -3,7 +3,7 @@
 # Program Description: Material gathering and crafting game
 #  by MAARTEN BERGSMA    www.bergsmaarten@gmail.com
 # Python 3.5.0 program template in Guerin computer science course
-# Dec 2015, Vers 3.8
+# Dec 2015, Vers 4.1
 
 import random
 import time
@@ -49,6 +49,32 @@ def ponderSec():
     print("-")
     time.sleep(1)
     return
+
+def craftBook():
+    
+    print("   ________  ___   _______________  _______  ___  ____  ____  __ __")
+    print("  / ___/ _ \/ _ | / __/_  __/  _/ |/ / ___/ / _ )/ __ \/ __ \/ //_/")
+    print(" / /__/ , _/ __ |/ _/  / / _/ //    / (_ / / _  / /_/ / /_/ / ,<")   
+    print(" \___/_/|_/_/ |_/_/   /_/ /___/_/|_/\___/ /____/\____/\____/_/|_|")
+
+    letThereBeLine()
+
+    print("> In order to craft, choose the items you want to use in the select menu")
+    print("> Once you have chosen the items press 'Q' to go back to the crafting interface")
+    print("> Press '2' and your item will be crafted")
+
+    letThereBeLine()
+    #Recipes
+
+    print("   ___  ________________  ________")
+    print("  / _ \/ __/ ___/  _/ _ \/ __/ __/")
+    print(" / , _/ _// /___/ // ___/ _/_\ \  ")
+    print("/_/|_/___/\___/___/_/  /___/___/  ")
+
+    letThereBeLine()
+
+    print("Axe: Stick, Cord, Rock")
+    print("FishingPole: Stick, Cord") 
 
 # Launches the player interface
 def interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID):
@@ -170,12 +196,12 @@ def craftEngine(resInv,toolInv,craftedInv):
                       print(i,resInv[i-1])
                 print("\n> You have selected [","-".join(selectedItems),"]")
                 letThereBeLine()
-                itemSelect = input("  [C] CLEAR   [X] DELETE   [M] COMPLEX   [Q] BACK\n\n>> ")
+                itemSelect = input("  [R] RECIPES   [C] CLEAR   [X] DELETE   [Q] BACK\n\n>> ")
                 
-                while itemSelect not in x and itemSelect != "Q" and itemSelect != "q" \
-                      and itemSelect != "c" and itemSelect != "C" and itemSelect != "X" \
-                      and itemSelect != "x" and itemSelect != "m" and itemSelect != "M":
-                    
+                while itemSelect not in x and itemSelect != "C" and itemSelect != "c" \
+                      and itemSelect != "R" and itemSelect != "X" and itemSelect != "x"\
+                      and itemSelect != "Q" and itemSelect != "q" and itemSelect != "r":
+            
                     itemSelect = input("\n> Please make a selection\n\n>> ")
 
                 for i in range(1,len(resInv)+1):
@@ -194,17 +220,16 @@ def craftEngine(resInv,toolInv,craftedInv):
                       
                     # Delete items in selected list
                     elif itemSelect == "X" or itemSelect == "x":
-                        selectedItems = []
+                        letThereBeLine()
+                        deleteInput = input("> Are you sure you want to delete these items?\n\n[Y] Yes\n[N] No\n\n>> ")
+                        if deleteInput == "Y" or deleteInput == "y":
+                            selectedItems = []
 
-                    # Complex crafting space
-                    elif itemSelect == "M" or itemSelect =="m":
-
-                    ##################################################
-
-                # CRAFTING BOOK HERE
-
-
-                    #################################################
+                    # Help with recipes and crafting
+                    elif itemSelect == "R" or itemSelect == "r":
+                        letThereBeLine()
+                        craftBook()
+                        
 
         # Check the selected items list against the list of recipes
         if craftAction == "2":
@@ -213,36 +238,44 @@ def craftEngine(resInv,toolInv,craftedInv):
             resValues = list(resRecipes.values())
             toolKeys = list(toolRecipes.keys())
             toolValues = list(toolRecipes.values())
-            complexKeys = list(complexRecipes.keys())
-            complexValues = list(complexRecipes.values())
-                      
+
+            # Search for match in recipe list
             for i in range(0,len(resRecipes)):
-                      
+                isMatch = True
+                for item in selectedItems:
+                    if item not in resValues[i]:
+                        isMatch = False
+                    else:
+                        continue
+
                 # If match found in resource recipe list...
-                if selectedItems == resValues[i]:
+
+                if isMatch == True:
                     letThereBeLine()
                     print("> You have crafted a(n)",resKeys[i])
- #########                   print(">",resKeys[i],"added to CRAFTED inventory")
+                    print(">",resKeys[i],"added to CRAFTED inventory")
                     craftedInv.append(resKeys[i])
                     selectedItems = []
-                    
+
+            # Search for match in tool list
             for i in range(0,len(toolRecipes)):
-                      
+                isMatch = True
+                for item in selectedItems:
+                    if item not in toolValues[i]:
+                        isMatch = False
+                    else:
+                        continue
+
                 # If match found in tool recipe list...
-                if selectedItems == toolValues[i]:
+
+                if isMatch == True:
+                    letThereBeLine()
                     print("> You have crafted a(n)",toolKeys[i])
-                    print(">",resKeys[i],"added to TOOLS inventory")
+                    print(">",toolKeys[i],"added to CRAFTED inventory")
+                    craftedInv.append(toolKeys[i])
                     toolInv.append(toolKeys[i])
                     selectedItems = []
-
-            for i in range(0,len(complexRecipes)):
-                
-                # If match found in complex recipe list...
-                if selectedItems == complexValues[i]:
-                    print("> You have crafted a(n)",complexKeys[i],"<<COMPLEX>>")
-                    print(">",complexKeys[i],"added to CRAFTED inventory")
-                    craftedInv.append(complexKeys[i])
-                    selectedItems = []
+                        
                       
             if selectedItems != []:
                 letThereBeLine()
@@ -252,7 +285,6 @@ def craftEngine(resInv,toolInv,craftedInv):
         if craftAction == "3":
             inventoryLaunch(resInv, toolInv, craftedInv)
 
-            
         # Craft go back condition
         if craftAction == "4":
             for i in range(0,len(selectedItems)):
@@ -447,6 +479,307 @@ def main():
                 checkForRes(resCount)
 
         endGame()
+    # True location Mountain   (ADDED CODE HERE)
+    if trueLocation == "2":
+        letThereBeCloseLine()
+        print ("    __  ___                  __        _     ")
+        print ("   /  |/  /___  __  ______  / /_____ _(_)___ ")
+        print ("  / /|_/ / __ \/ / / / __ \/ __/ __ `/ / __ \ ")
+        print (" / /  / / /_/ / /_/ / / / / /_/ /_/ / / / / / ")
+        print ("/_/  /_/\____/\__,_/_/ /_/\__/\__,_/_/_/ /_/ ")
+        letThereBeLine()
+        
+        # Story introduction for Mountain ... take time comments out later
+ #       time.sleep(1)
+        print("> You suddenly wake up on top of a high mountain.")
+ #       time.sleep(2.5)
+        print("> You look around.")
+ #       ponderSec()
+        print("> There's nobody around ... only you... and a pikachu")
+ #       time.sleep(2.5)
+        print("> However, there are many natural resources around you.")
+ #       time.sleep(2.5)
+        print("> You realize that the only way to survive is to explore and gather.")
+        print("> Time to get crafting!")
+ #       time.sleep(2.5)
+        letThereBeLine()
+        
+        while resLeft == True:
+            
+            # Random resource generation ... change to larger range later
+            resType = random.randint(0,10)
+            textID = random.randint(0,3)
+
+            # Tree condition
+            if resType == 0 or resType == 1:
+                resText = "TREE"
+                gatherAble = ["WOOD","WOOD","WOOD"]
+                reqTool = "AXE"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Shrub condition
+            elif resType == 2 or resType == 3:
+                resText = "SHRUB"
+                gatherAble = ["LEAVES","STICK","STICK"]
+                reqTool = "HANDS"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Stonepile condition
+            elif resType == 4 or resType == 5:
+                resText = "STONEPILE"
+                gatherAble = []
+                # Randomizes rock count
+                for i in range(0,random.randint(1,2)):
+                    gatherAble.append("ROCK")
+                # Randomize chance for flint
+                flintChance = random.randint(1,3)
+                if flintChance == 1:
+                    gatherAble.append("FLINT")
+                reqTool = "HANDS"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Vine condition
+            elif resType == 6 or resType == 7:
+                resText = "VINE"
+                reqTool = "HANDS"
+                gatherAble = ["CORD"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Rabbit condition
+            elif resType == 8:
+                resText = "RABBIT"
+                reqTool = "BOW & ARROW"
+                gatherAble = ["MEAT"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Pond condition
+            elif resType == 9:
+                resText = "POND"
+                reqTool = "HANDS"
+                gatherAble = ["FRESHWATER"]
+                # Randomizes fish spawn chance
+                fishChance = random.randint(1,4)
+                if fishChance == 1:
+                    gatherAble.append("UNLUCKY FISH")
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Vegetable condition
+            elif resType == 10:
+                resText = "SUSPICIOUS ROOT"
+                reqTool = "HANDS"
+                gatherAble = ["POTATO"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+        endGame()
+
+        # True location DESERT   (ADDED CODE HERE)
+    if trueLocation == "3":
+        letThereBeCloseLine()
+        print ("    ____  ___________ __________  ______ ")
+        print ("   / __ \/ ____/ ___// ____/ __ \/_  __/ ")
+        print ("  / / / / __/  \__ \/ __/ / /_/ / / /   ")
+        print (" / /_/ / /___ ___/ / /___/ _, _/ / /    ")
+        print ("/_____/_____//____/_____/_/ |_| /_/   ")
+        letThereBeLine()
+        
+        # Story introduction for Desert ... take time comments out later
+ #       time.sleep(1)
+        print("> You suddenly wake up on top of a high mountain.")
+ #       time.sleep(2.5)
+        print("> You look around.")
+ #       ponderSec()
+        print("> There's nobody around ... only you... and a pikachu")
+ #       time.sleep(2.5)
+        print("> However, there are many natural resources around you.")
+ #       time.sleep(2.5)
+        print("> You realize that the only way to survive is to explore and gather.")
+        print("> Time to get crafting!")
+ #       time.sleep(2.5)
+        letThereBeLine()
+        
+        while resLeft == True:
+            
+            # Random resource generation ... change to larger range later
+            resType = random.randint(0,10)
+            textID = random.randint(0,3)
+
+            # Tree condition
+            if resType == 0 or resType == 1:
+                resText = "TREE"
+                gatherAble = ["WOOD","WOOD","WOOD"]
+                reqTool = "AXE"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Shrub condition
+            elif resType == 2 or resType == 3:
+                resText = "SHRUB"
+                gatherAble = ["LEAVES","STICK","STICK"]
+                reqTool = "HANDS"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Stonepile condition
+            elif resType == 4 or resType == 5:
+                resText = "STONEPILE"
+                gatherAble = []
+                # Randomizes rock count
+                for i in range(0,random.randint(1,2)):
+                    gatherAble.append("ROCK")
+                # Randomize chance for flint
+                flintChance = random.randint(1,3)
+                if flintChance == 1:
+                    gatherAble.append("FLINT")
+                reqTool = "HANDS"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Vine condition
+            elif resType == 6 or resType == 7:
+                resText = "VINE"
+                reqTool = "HANDS"
+                gatherAble = ["CORD"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Rabbit condition
+            elif resType == 8:
+                resText = "RABBIT"
+                reqTool = "BOW & ARROW"
+                gatherAble = ["MEAT"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Pond condition
+            elif resType == 9:
+                resText = "POND"
+                reqTool = "HANDS"
+                gatherAble = ["FRESHWATER"]
+                # Randomizes fish spawn chance
+                fishChance = random.randint(1,4)
+                if fishChance == 1:
+                    gatherAble.append("UNLUCKY FISH")
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Vegetable condition
+            elif resType == 10:
+                resText = "SUSPICIOUS ROOT"
+                reqTool = "HANDS"
+                gatherAble = ["POTATO"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+        endGame()
+
+        # True location Island   (ADDED CODE HERE)
+    if trueLocation == "4":
+        letThereBeCloseLine()
+        print ("     _________ __    ___    _   ______ ")
+        print ("    /  _/ ___// /   /   |  / | / / __ \ ")
+        print ("    / / \__ \/ /   / /| | /  |/ / / / / ")
+        print ("  _/ / ___/ / /___/ ___ |/ /|  / /_/ / ")
+        print (" /___//____/_____/_/  |_/_/ |_/_____/  ")
+       
+               
+        letThereBeLine()
+        
+        # Story introduction for Island ... take time comments out later
+ #       time.sleep(1)
+        print("> You suddenly wake up on a lonely island")
+ #       time.sleep(2.5)
+        print("> You look around.")
+ #       ponderSec()
+        print("> There's nobody around ... only you... and a Zigzagoon")
+ #       time.sleep(2.5)
+        print("> However, there are many natural resources around you.")
+ #       time.sleep(2.5)
+        print("> You realize that the only way to survive is to explore and gather.")
+        print("> Time to get crafting!")
+ #       time.sleep(2.5)
+        letThereBeLine()
+        
+        while resLeft == True:
+            
+            # Random resource generation ... change to larger range later
+            resType = random.randint(0,10)
+            textID = random.randint(0,3)
+
+            # Tree condition
+            if resType == 0 or resType == 1:
+                resText = "TREE"
+                gatherAble = ["WOOD","WOOD","WOOD"]
+                reqTool = "AXE"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Shrub condition
+            elif resType == 2 or resType == 3:
+                resText = "SHRUB"
+                gatherAble = ["LEAVES","STICK","STICK"]
+                reqTool = "HANDS"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Stonepile condition
+            elif resType == 4 or resType == 5:
+                resText = "STONEPILE"
+                gatherAble = []
+                # Randomizes rock count
+                for i in range(0,random.randint(1,2)):
+                    gatherAble.append("ROCK")
+                # Randomize chance for flint
+                flintChance = random.randint(1,3)
+                if flintChance == 1:
+                    gatherAble.append("FLINT")
+                reqTool = "HANDS"
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Vine condition
+            elif resType == 6 or resType == 7:
+                resText = "VINE"
+                reqTool = "HANDS"
+                gatherAble = ["CORD"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Rabbit condition
+            elif resType == 8:
+                resText = "RABBIT"
+                reqTool = "BOW & ARROW"
+                gatherAble = ["MEAT"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Pond condition
+            elif resType == 9:
+                resText = "POND"
+                reqTool = "HANDS"
+                gatherAble = ["FRESHWATER"]
+                # Randomizes fish spawn chance
+                fishChance = random.randint(1,4)
+                if fishChance == 1:
+                    gatherAble.append("UNLUCKY FISH")
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+            # Vegetable condition
+            elif resType == 10:
+                resText = "SUSPICIOUS ROOT"
+                reqTool = "HANDS"
+                gatherAble = ["POTATO"]
+                interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
+                checkForRes(resCount)
+
+        endGame()
 
 ##############################################################################
 
@@ -455,9 +788,7 @@ def main():
 resRecipes = {"FIRESTARTER":["STICK","STICK"],"FISH & CHIPS":["UNLUCKY FISH","POTATO"],\
               "MEAL":["FRESHWATER","POTATO"],"HEARTY MEAL":["FRESHWATER","MEAT"]}
 
-toolRecipes = {"AXE":["STICK","CORD","ROCK"]}
-
-complexRecipes = {"CAMPFIRE":["FIRESTARTER","WOOD"]}
+toolRecipes = {"AXE":["STICK","CORD","ROCK"],"BOW & ARROW":["STICK","STICK","CORD","FLINT"]}
 
 ##############################################################################
 
@@ -476,7 +807,7 @@ print("████╗ ████║██╔══██╗██╔═══
 print("██╔████╔██║███████║███████╗   ██║   █████╗  ██████╔╝ ")
 print("██║╚██╔╝██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗ ")
 print("██║ ╚═╝ ██║██║  ██║███████║   ██║   ███████╗██║  ██║ ")
-print("╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v3.8")
+print("╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v4.1")
 letThereBeLine()
 
 
