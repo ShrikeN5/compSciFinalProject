@@ -1,9 +1,9 @@
 #!usr/bin/python3
 # Program Name: CRAFT MASTER
 # Program Description: Material gathering and crafting game
-#  by MAARTEN BERGSMA    www.bergsmaarten@gmail.com
+#  by MAARTEN BERGSMA, KEEGAN KIRKWOOD, AND LUKE BEUHLER    www.bergsmaarten@gmail.com
 # Python 3.5.0 program template in Guerin computer science course
-# Dec 2015, Vers 4.1
+# Dec 2015, Vers 4.2
 
 import random
 import time
@@ -14,6 +14,8 @@ toolInv = ["HANDS"]
 resLeft = True
 resCount = 10
 score = "0"
+knownKeys = []
+knownValues = []
 
 # FUNCTIONS
 
@@ -51,30 +53,30 @@ def ponderSec():
     return
 
 def craftBook():
-    
-    print("   ________  ___   _______________  _______  ___  ____  ____  __ __")
-    print("  / ___/ _ \/ _ | / __/_  __/  _/ |/ / ___/ / _ )/ __ \/ __ \/ //_/")
-    print(" / /__/ , _/ __ |/ _/  / / _/ //    / (_ / / _  / /_/ / /_/ / ,<")   
-    print(" \___/_/|_/_/ |_/_/   /_/ /___/_/|_/\___/ /____/\____/\____/_/|_|")
+    global knownKeys
+    global knownValues
 
-    letThereBeLine()
-
-    print("> In order to craft, choose the items you want to use in the select menu")
-    print("> Once you have chosen the items press 'Q' to go back to the crafting interface")
-    print("> Press '2' and your item will be crafted")
-
-    letThereBeLine()
-    #Recipes
-
+    letThereBeCloseLine()
     print("   ___  ________________  ________")
     print("  / _ \/ __/ ___/  _/ _ \/ __/ __/")
     print(" / , _/ _// /___/ // ___/ _/_\ \  ")
     print("/_/|_/___/\___/___/_/  /___/___/  ")
-
     letThereBeLine()
 
-    print("Axe: Stick, Cord, Rock")
-    print("FishingPole: Stick, Cord") 
+    print("> In order to craft, choose the items you want to use in the select menu")
+    print("> Once you have chosen the items press 'Q' to go back to the crafting interface")
+    print("> Selece 'CRAFT' and your item will be crafted")
+    print("> Once you have crafted an item, its recipe will stay written in your recipe book.")
+    
+    letThereBeLine()
+
+    if len(knownKeys) <= 0:
+        print("> You don't know any recipes yet...")
+    else:
+        print("> These are the recipes you already know:\n")
+        for i in range(0,len(knownKeys)):
+            print(knownKeys[i],":",",".join(knownValues[i]))
+            
 
 # Launches the player interface
 def interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID):
@@ -158,6 +160,8 @@ def interfaceLaunch(gatherAble,reqTool,resInv,toolInv,craftedInv,resText,textID)
     return
 
 def craftEngine(resInv,toolInv,craftedInv):
+    global knownKeys
+    global knownValues
     global score
     selectedItems = []
     doneCraft = False
@@ -217,18 +221,17 @@ def craftEngine(resInv,toolInv,craftedInv):
                     elif itemSelect == "C" or itemSelect == "c":
                         for i in range(0,len(selectedItems)):
                             resInv.append(selectedItems.pop())
+                        break
                       
                     # Delete items in selected list
                     elif itemSelect == "X" or itemSelect == "x":
-                        letThereBeLine()
-                        deleteInput = input("> Are you sure you want to delete these items?\n\n[Y] Yes\n[N] No\n\n>> ")
-                        if deleteInput == "Y" or deleteInput == "y":
-                            selectedItems = []
+                        selectedItems = []
+                        break
 
                     # Help with recipes and crafting
                     elif itemSelect == "R" or itemSelect == "r":
-                        letThereBeLine()
                         craftBook()
+                        break
                         
 
         # Check the selected items list against the list of recipes
@@ -239,6 +242,7 @@ def craftEngine(resInv,toolInv,craftedInv):
             toolKeys = list(toolRecipes.keys())
             toolValues = list(toolRecipes.values())
 
+
             # Search for match in recipe list
             for i in range(0,len(resRecipes)):
                 isMatch = True
@@ -247,6 +251,13 @@ def craftEngine(resInv,toolInv,craftedInv):
                         isMatch = False
                     else:
                         continue
+                for item2 in resValues[i]:
+                    if item2 not in selectedItems:
+                        isMatch = False
+                    else:
+                        continue
+                if selectedItems == []:
+                    isMatch = False
 
                 # If match found in resource recipe list...
 
@@ -255,27 +266,36 @@ def craftEngine(resInv,toolInv,craftedInv):
                     print("> You have crafted a(n)",resKeys[i])
                     print(">",resKeys[i],"added to CRAFTED inventory")
                     craftedInv.append(resKeys[i])
+                    knownKeys.append(resKeys[i])
+                    knownValues.append(resValues[i])
                     selectedItems = []
 
             # Search for match in tool list
             for i in range(0,len(toolRecipes)):
                 isMatch = True
-                for item in selectedItems:
-                    if item not in toolValues[i]:
+                for item1 in selectedItems:
+                    if item1 not in toolValues[i]:
                         isMatch = False
                     else:
                         continue
+                for item2 in toolValues[i]:
+                    if item2 not in selectedItems:
+                        isMatch = False
+                    else:
+                        continue
+                if selectedItems == []:
+                    isMatch = False
 
                 # If match found in tool recipe list...
-
                 if isMatch == True:
                     letThereBeLine()
                     print("> You have crafted a(n)",toolKeys[i])
                     print(">",toolKeys[i],"added to CRAFTED inventory")
                     craftedInv.append(toolKeys[i])
                     toolInv.append(toolKeys[i])
+                    knownKeys.append(toolKeys[i])
+                    knownValues.append(toolValues[i])
                     selectedItems = []
-                        
                       
             if selectedItems != []:
                 letThereBeLine()
@@ -370,7 +390,7 @@ def main():
         
     if pickLocation == "N" or pickLocation == "n":
         # Change this later, when there are more locations...
-        trueLocation = str(random.randint(1,1)) # This has GOT to be a string to work with rest of program
+        trueLocation = str(random.randint(1,4)) # This has GOT to be a string to work with rest of program
                            
     if pickLocation == "Y" or pickLocation == "y":
         letThereBeLine()
@@ -435,7 +455,7 @@ def main():
                 for i in range(0,random.randint(1,2)):
                     gatherAble.append("ROCK")
                 # Randomize chance for flint
-                flintChance = random.randint(1,3)
+                flintChance = random.randint(1,2)
                 if flintChance == 1:
                     gatherAble.append("FLINT")
                 reqTool = "HANDS"
@@ -534,7 +554,7 @@ def main():
                 for i in range(0,random.randint(1,2)):
                     gatherAble.append("ROCK")
                 # Randomize chance for flint
-                flintChance = random.randint(1,3)
+                flintChance = random.randint(1,2)
                 if flintChance == 1:
                     gatherAble.append("FLINT")
                 reqTool = "HANDS"
@@ -634,7 +654,7 @@ def main():
                 for i in range(0,random.randint(1,2)):
                     gatherAble.append("ROCK")
                 # Randomize chance for flint
-                flintChance = random.randint(1,3)
+                flintChance = random.randint(1,2)
                 if flintChance == 1:
                     gatherAble.append("FLINT")
                 reqTool = "HANDS"
@@ -736,7 +756,7 @@ def main():
                 for i in range(0,random.randint(1,2)):
                     gatherAble.append("ROCK")
                 # Randomize chance for flint
-                flintChance = random.randint(1,3)
+                flintChance = random.randint(1,2)
                 if flintChance == 1:
                     gatherAble.append("FLINT")
                 reqTool = "HANDS"
@@ -783,12 +803,15 @@ def main():
 
 ##############################################################################
 
-# Recipe layout: "NAME":["REQIREMENT","REQUIREMENT","ETC."]
+# Recipe layout: "NAME":["REQIREMENT","REQUIREMENT","ETC.","SCORE BONUS"]
                       
 resRecipes = {"FIRESTARTER":["STICK","STICK"],"FISH & CHIPS":["UNLUCKY FISH","POTATO"],\
-              "MEAL":["FRESHWATER","POTATO"],"HEARTY MEAL":["FRESHWATER","MEAT"]}
+              "MEAL":["FRESHWATER","POTATO"],"HEARTY MEAL":["FRESHWATER","MEAT"],\
+              "SHELTER":["WOOD","WOOD","WOOD","CORD"],"KNIFE":["FLINT","STICK"],\
+              "POTATO ON A STICK":["POTATO","STICK"]}
 
-toolRecipes = {"AXE":["STICK","CORD","ROCK"],"BOW & ARROW":["STICK","STICK","CORD","FLINT"]}
+toolRecipes = {"AXE":["STICK","CORD","ROCK"],"BOW & ARROW":["STICK","STICK","CORD","FLINT"],\
+               "FISHING POLE":["STICK","CORD"]}
 
 ##############################################################################
 
