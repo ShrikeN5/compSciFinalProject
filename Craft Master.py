@@ -3,7 +3,7 @@
 # Program Description: Material gathering and crafting game
 #  by MAARTEN BERGSMA, KEEGAN KIRKWOOD, AND LUKE BEUHLER    www.bergsmaarten@gmail.com
 # Python 3.5.0 program template in Guerin computer science course
-# Dec 2015, Vers 5.0
+# Dec 2015, Vers 5.1
 
 import random
 import time
@@ -414,7 +414,7 @@ def main():
                            
     if pickLocation == "Y" or pickLocation == "y":
         letThereBeLine()
-        trueLocation = input("> Where do you want to go?\n\n[1] Forest\n[2] Mountains\n[3] Desert\n[4] Riverbank\n\n>> ")
+        trueLocation = input("> Where do you want to go?\n\n[1] Forest\n[2] Mountains\n[3] Desert\n[4] Island\n\n>> ")
         while trueLocation != "1" and trueLocation != "2" and trueLocation != "3" and trueLocation != "4":
             letThereBeLine()
             trueLocation = input("> Please select:\n\n[1] Forest\n[2] Mountains\n[3] Desert\n[4] Island\n\n>> ")
@@ -1025,7 +1025,7 @@ print("████╗ ████║██╔══██╗██╔═══
 print("██╔████╔██║███████║███████╗   ██║   █████╗  ██████╔╝ ")
 print("██║╚██╔╝██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗ ")
 print("██║ ╚═╝ ██║██║  ██║███████║   ██║   ███████╗██║  ██║ ")
-print("╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v5.0")
+print("╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v5.1")
 letThereBeLine()
 
 
@@ -1054,7 +1054,7 @@ if chooseTut == "Y" or chooseTut == "y":
     
 letThereBeLine()
 
-diffSet = int(input("> Enter resource gather limit:\n\n>> "))
+diffSet = int(input("> Enter resource gather limit (difficulty):\n\n>> "))
 resCount = diffSet
 
     
